@@ -1,5 +1,9 @@
 package hw4.game;
 
-public class Movement {
-
+public enum Movement {
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
+	
 }
