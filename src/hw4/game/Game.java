@@ -14,24 +14,15 @@ public class Game {
     private Grid grid;
     private final Random rand = new Random();
 
-    /**
-     * Constructor used for generating a random grid.
-     */
     public Game(int gridSize) {
         this.gridSize = gridSize;
     }
 
-    /**
-     * Constructor used for testing (accepts a predefined grid).
-     */
     public Game(Grid grid) {
         this.grid = grid;
         this.gridSize = grid.getRows().size();
     }
 
-    /**
-     * Generates a random grid that satisfies assignment constraints.
-     */
     public Grid createRandomGrid(int size) {
         if (size < 3 || size > 7) return null;
 
@@ -71,10 +62,6 @@ public class Game {
         return grid;
     }
 
-    /**
-     * Handles the player's movement in the grid.
-     * Returns true if the player escapes through the EXIT.
-     */
     public boolean play(Movement move, Player player) {
         if (move == null || player == null) return false;
 
@@ -89,26 +76,43 @@ public class Game {
 
         switch (move) {
             case UP -> {
-                if (currentCell.getUp() == CellComponents.APERTURE && rowIndex > 0)
+                if (currentCell.getUp() == CellComponents.APERTURE && rowIndex > 0) {
+                    System.out.println("Moving UP");
                     newRow--;
-                else return false;
+                } else {
+                    System.out.println("Blocked UP");
+                    return false;
+                }
             }
             case DOWN -> {
-                if (currentCell.getDown() == CellComponents.APERTURE && rowIndex < gridSize - 1)
+                if (currentCell.getDown() == CellComponents.APERTURE && rowIndex < gridSize - 1) {
+                    System.out.println("Moving DOWN");
                     newRow++;
-                else return false;
+                } else {
+                    System.out.println("Blocked DOWN");
+                    return false;
+                }
             }
             case LEFT -> {
                 if (currentCell.getLeft() == CellComponents.EXIT && colIndex == 0) {
+                    System.out.println("Escaped LEFT!");
                     return true;
                 } else if (currentCell.getLeft() == CellComponents.APERTURE && colIndex > 0) {
+                    System.out.println("Moving LEFT");
                     newCol--;
-                } else return false;
+                } else {
+                    System.out.println("Blocked LEFT");
+                    return false;
+                }
             }
             case RIGHT -> {
-                if (currentCell.getRight() == CellComponents.APERTURE && colIndex < gridSize - 1)
+                if (currentCell.getRight() == CellComponents.APERTURE && colIndex < gridSize - 1) {
+                    System.out.println("Moving RIGHT");
                     newCol++;
-                else return false;
+                } else {
+                    System.out.println("Blocked RIGHT");
+                    return false;
+                }
             }
         }
 
@@ -117,23 +121,14 @@ public class Game {
         return false;
     }
 
-    /**
-     * Returns the current grid instance.
-     */
     public Grid getGrid() {
         return grid;
     }
 
-    /**
-     * Sets the current grid (used in testing).
-     */
     public void setGrid(Grid grid) {
         this.grid = grid;
     }
 
-    /**
-     * Randomly returns a wall or aperture (biased toward aperture).
-     */
     private CellComponents randComponent() {
         return switch (rand.nextInt(3)) {
             case 0 -> CellComponents.WALL;
