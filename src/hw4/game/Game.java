@@ -6,15 +6,32 @@ import hw4.player.Player;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Main game logic for Tears, Despair & Debugging.
+ */
 public class Game {
-	private final int gridSize;
+    private final int gridSize;
     private Grid grid;
     private final Random rand = new Random();
 
+    /**
+     * Constructor used for generating a random grid.
+     */
     public Game(int gridSize) {
         this.gridSize = gridSize;
     }
 
+    /**
+     * Constructor used for testing (accepts a predefined grid).
+     */
+    public Game(Grid grid) {
+        this.grid = grid;
+        this.gridSize = grid.getRows().size();
+    }
+
+    /**
+     * Generates a random grid that satisfies assignment constraints.
+     */
     public Grid createRandomGrid(int size) {
         if (size < 3 || size > 7) return null;
 
@@ -29,10 +46,8 @@ public class Game {
                 CellComponents up = randComponent();
                 CellComponents down = randComponent();
 
-                // Ensure each cell has at least one APERTURE
                 if (left != CellComponents.APERTURE && right != CellComponents.APERTURE &&
                     up != CellComponents.APERTURE && down != CellComponents.APERTURE) {
-                    // Randomly make one component an aperture
                     switch (rand.nextInt(4)) {
                         case 0 -> left = CellComponents.APERTURE;
                         case 1 -> right = CellComponents.APERTURE;
@@ -41,7 +56,6 @@ public class Game {
                     }
                 }
 
-                // Set exactly one EXIT cell on the leftmost column
                 if (j == 0 && i == exitRow) {
                     left = CellComponents.EXIT;
                 } else if (j == 0) {
@@ -57,6 +71,10 @@ public class Game {
         return grid;
     }
 
+    /**
+     * Handles the player's movement in the grid.
+     * Returns true if the player escapes through the EXIT.
+     */
     public boolean play(Movement move, Player player) {
         if (move == null || player == null) return false;
 
@@ -82,7 +100,7 @@ public class Game {
             }
             case LEFT -> {
                 if (currentCell.getLeft() == CellComponents.EXIT && colIndex == 0) {
-                    return true; // Player escapes!
+                    return true;
                 } else if (currentCell.getLeft() == CellComponents.APERTURE && colIndex > 0) {
                     newCol--;
                 } else return false;
@@ -94,17 +112,33 @@ public class Game {
             }
         }
 
-        // Update player position
         player.setCurrentRow(rows.get(newRow));
         player.setCurrentCell(rows.get(newRow).getCells().get(newCol));
         return false;
     }
 
+    /**
+     * Returns the current grid instance.
+     */
+    public Grid getGrid() {
+        return grid;
+    }
+
+    /**
+     * Sets the current grid (used in testing).
+     */
+    public void setGrid(Grid grid) {
+        this.grid = grid;
+    }
+
+    /**
+     * Randomly returns a wall or aperture (biased toward aperture).
+     */
     private CellComponents randComponent() {
         return switch (rand.nextInt(3)) {
             case 0 -> CellComponents.WALL;
             case 1 -> CellComponents.APERTURE;
-            case 2 -> CellComponents.APERTURE; // Make APERTURE more likely
+            case 2 -> CellComponents.APERTURE;
             default -> CellComponents.WALL;
         };
     }
